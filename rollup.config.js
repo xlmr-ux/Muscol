@@ -1,5 +1,5 @@
 import svelte from '@rollup/plugin-svelte';
-import { babel } from '@rollup/plugin-babel'; // Updated babel plugin
+import { babel } from '@rollup/plugin-babel';
 import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 import livereload from 'rollup-plugin-livereload';
@@ -39,21 +39,23 @@ export default {
     },
     plugins: [
         svelte({
-            dev: !production,
-            css: css => {
-                css.write('bundle.css');
-            }
+            compilerOptions: {
+                dev: !production
+            },
+            emitCss: false
         }),
         resolve({
             browser: true,
-            dedupe: ['svelte']
+            dedupe: ['svelte'],
+            exportConditions: ['svelte']
         }),
         commonjs(),
         nodePolyfills(),
         babel({
-            babelHelpers: 'bundled', // Required for @rollup/plugin-babel
+            babelHelpers: 'bundled',
             exclude: [/\/core-js\//],
-            extensions: ['.svelte', '.js', '.jsx', '.es6', '.es', '.mjs', '.ts']
+            extensions: ['.js', '.jsx', '.es6', '.es', '.mjs', '.svelte'],
+            presets: ['@babel/preset-env']
         }),
         !production && serve(),
         !production && livereload('public'),
