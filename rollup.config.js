@@ -6,6 +6,7 @@ import livereload from 'rollup-plugin-livereload';
 import { terser } from 'rollup-plugin-terser';
 import nodePolyfills from 'rollup-plugin-node-polyfills';
 import postcss from 'rollup-plugin-postcss';
+import json from '@rollup/plugin-json';
 
 const production = !process.env.ROLLUP_WATCH;
 
@@ -36,15 +37,16 @@ export default {
         file: 'public/build/bundle.js'
     },
     plugins: [
+        json(),
         postcss({
             extract: true,
-            minimize: production
+            minimize: production,
+            use: ['sass']
         }),
         svelte({
             compilerOptions: {
                 dev: !production
-            },
-            emitCss: false
+            }
         }),
         resolve({
             browser: true,
@@ -55,7 +57,7 @@ export default {
         babel({
             babelHelpers: 'bundled',
             exclude: [/\/core-js\//],
-            extensions: ['.svelte', '.js', '.jsx', '.es6', '.es', '.mjs', '.ts']
+            extensions: ['.js', '.jsx', '.svelte']
         }),
         !production && serve(),
         !production && livereload('public'),
