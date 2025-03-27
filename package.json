@@ -1,4 +1,10 @@
 {
+  {
+  "license": "MIT",  // Add this line near the top
+  "name": "smb-vis",
+  "version": "1.0.0",
+  // ... rest of your package.json
+}
   "name": "smb-vis",
   "url": "https://xlmr-ux.github.io/Muscol/",
   "author": "Christopher Pietsch <cpietsch@gmail.com> (https://chrispie.com)",
