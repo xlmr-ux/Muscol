@@ -5,16 +5,15 @@ import commonjs from '@rollup/plugin-commonjs';
 import livereload from 'rollup-plugin-livereload';
 import { terser } from 'rollup-plugin-terser';
 import nodePolyfills from 'rollup-plugin-node-polyfills';
+import postcss from 'rollup-plugin-postcss';
 
 const production = !process.env.ROLLUP_WATCH;
 
 function serve() {
     let server;
-
     function toExit() {
         if (server) server.kill(0);
     }
-
     return {
         writeBundle() {
             if (server) return;
@@ -22,7 +21,6 @@ function serve() {
                 stdio: ['ignore', 'inherit', 'inherit'],
                 shell: true
             });
-
             process.on('SIGTERM', toExit);
             process.on('exit', toExit);
         }
@@ -38,6 +36,10 @@ export default {
         file: 'public/build/bundle.js'
     },
     plugins: [
+        postcss({
+            extract: true,
+            minimize: production
+        }),
         svelte({
             compilerOptions: {
                 dev: !production
@@ -46,16 +48,14 @@ export default {
         }),
         resolve({
             browser: true,
-            dedupe: ['svelte'],
-            exportConditions: ['svelte']
+            dedupe: ['svelte']
         }),
         commonjs(),
         nodePolyfills(),
         babel({
             babelHelpers: 'bundled',
             exclude: [/\/core-js\//],
-            extensions: ['.js', '.jsx', '.es6', '.es', '.mjs', '.svelte'],
-            presets: ['@babel/preset-env']
+            extensions: ['.svelte', '.js', '.jsx', '.es6', '.es', '.mjs', '.ts']
         }),
         !production && serve(),
         !production && livereload('public'),
